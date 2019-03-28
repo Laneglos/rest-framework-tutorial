@@ -1,6 +1,9 @@
 from django.conf.urls import include, url
+from django.conf.urls.static import static
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
+
+from tutorial import settings
 
 API_TITLE = 'Pastebin API'
 API_DESCRIPTION = 'A Web API for creating and viewing highlighted code snippets.'
@@ -11,4 +14,4 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^schema/$', schema_view),
     url(r'^docs/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION))
-]
+] + static(settings.STATIC_URL)
