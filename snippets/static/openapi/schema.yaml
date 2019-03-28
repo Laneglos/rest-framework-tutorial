@@ -1,0 +1,234 @@
+openapi: 3.0.1
+info:
+  title: Django Rest Framework Tutorial
+  description: |
+    This is the OpenAPI definition for the Django Rest Framework tutorial.
+  version: 1.0.0
+externalDocs:
+  description: Find out more about DRF Tutorial.
+  url: https://www.django-rest-framework.org/tutorial/1-serialization/
+paths:
+  /snippets:
+    get:
+      summary: List existing snippets
+      operationId: snippetsList
+      parameters:
+        - in: query
+          name: page
+          schema:
+            description: A page number within the paginated result set.
+            title: Page
+            type: integer
+      responses:
+        200:
+          description: The Request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnippetList'
+    post:
+      summary: Create a new instance of a Snippet entity.
+      requestBody:
+        description: A JSON object defining the Snippet.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+      responses:
+        '201':
+          description: Snippet created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+        '400':
+          $ref: '#/components/responses/400'
+  /snippets/{snippetId}:
+    get:
+      summary: Get a Snippet instance by id.
+      parameters:
+        - name: snippetId
+          in: path
+          description: ID of Snippet entity to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Snippet response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+    put:
+      summary: Update a Snippet instance by id.
+      requestBody:
+        description: A JSON object defining the Snippet.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Snippet'
+      parameters:
+        - name: snippetId
+          in: path
+          description: ID of Snippet entity to update
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An single instance of a Snippet entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+        '400':
+          $ref: '#/components/responses/400'
+    delete:
+      summary: Delete a Snippet instance by id.
+      parameters:
+        - name: snippetId
+          in: path
+          description: ID of Snippet entity to update
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: The Snippet entity was deleted successfully.
+  /snippets/{snippetId}/highlight:
+    get:
+      summary: Get the Highlight for the Snippet.
+      operationId: snippetHighlight
+      parameters:
+        - name: snippetId
+          in: path
+          description: ID of Snippet entity to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The Request was successful.
+          content:
+            text/html:
+              schema:
+                type: string
+  /users:
+    get:
+      summary: List existing Users
+      operationId: usersList
+      parameters:
+        - in: query
+          name: page
+          schema:
+            description: A page number within the paginated result set.
+            title: Page
+            type: integer
+      responses:
+        200:
+          description: The Request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+  /users/{userId}:
+    get:
+      summary: Get a User instance by id.
+      parameters:
+        - name: userId
+          in: path
+          description: ID of User entity to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    SnippetList:
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+        previous:
+          type: string
+          format: uri
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Snippet'
+    Snippet:
+      required:
+      - code
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        owner:
+          type: string
+          readOnly: true
+        title:
+          type: string
+        linenos:
+          type: boolean
+        language:
+          type: string
+        style:
+          type: string
+        highlight:
+          type: string
+          format: uri
+          readOnly: true
+    UserList:
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+        previous:
+          type: string
+          format: uri
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        snippets:
+          type: array
+          items:
+            type: string
+            format: uri
+  responses:
+    '400':
+      description: A request has not been formulated correctly and the server cannot respond successfully.
+      headers:
+        X-Request-Id:
+          description: 'An optional id which identifies the request'
+          schema:
+            type: string
+            format: uuid
+          required: false
