@@ -4,7 +4,10 @@
 *~
 .*
 env
+.env
+staticfiles/
 
 # Accept these files in the repository
 !.gitignore
+!.dockerignore
 !.travis.yml

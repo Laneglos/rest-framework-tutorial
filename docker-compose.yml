@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testdb
+      DB_USER: app_user
+      DB_PASS: somepass1
+      MIGRATOR_DB_USER: migrator_user
+      MIGRATOR_DB_PASS: somepass2
+    image: postgres:10
+    restart: "no"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker/db/:/docker-entrypoint-initdb.d/
+      - local-db-data:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+    container_name: server
+    env_file: .env
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/src/
+    depends_on:
+      - db
+    entrypoint: ["wait-for", "-t", "6", "db:5432", "--", "/usr/local/bin/entrypoint.sh"]
+
+volumes:
+  local-db-data:
+    driver: local
