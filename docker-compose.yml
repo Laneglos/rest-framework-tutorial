@@ -1,5 +1,9 @@
 version: '3.3'
 
+# passwords should never be encoded in this file
+# provide config parameters as environment variables
+# passed to the container
+
 services:
   db:
     container_name: db
@@ -23,7 +27,9 @@ services:
     build:
       context: .
     container_name: server
-    env_file: .env
+    environment:
+      USER_DB_PASS: somepass1
+      MIGRATOR_DB_PASS: somepass2
     expose:
       - 8000
     ports:
