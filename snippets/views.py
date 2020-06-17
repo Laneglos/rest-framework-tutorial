@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
-from rest_framework import permissions, renderers, viewsets
+from rest_framework import permissions, renderers, viewsets, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from snippets.models import Snippet
